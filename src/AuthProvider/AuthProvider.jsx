@@ -9,8 +9,15 @@ const AuthProvider = ({ children }) => {
         `http://localhost:5000/login?email=${user.email}&password=${user.password}`
       )
       .then((res) => {
-        console.log(res.data);
+        //console.log(res.data);
+       if(res.data.message){
+        localStorage.removeItem("user");
+       }
+       if(res.data.email){
+        setUser(res.data);
         localStorage.setItem("user", JSON.stringify(res.data));
+       }
+
       });
   };
   const handleRegisterUser = (body) => {
@@ -18,8 +25,9 @@ const AuthProvider = ({ children }) => {
       .post(`http://localhost:5000/register`, body)
       .then((res) => {
         //console.log(res)
-        //console.log(JSON.parse(res.config.data))
-        const data = JSON.parse(res.config.data);
+        // console.log((res.data.userDetails))
+        const data = res.data.userDetails;
+        
         //console.log(data)
         if (data) {
           setUser(data);

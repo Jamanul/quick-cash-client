@@ -3,10 +3,30 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const Login = () => {
+    const [pin, setPin] = useState(new Array(5).fill(""));
   const [isNumber, setIsNumber] = useState(false);
   const {handleLoginUser}=useContext(AuthContext)
   const handleIsNumber = () => {
     setIsNumber(!isNumber);
+  };
+  const handleOnChange = (e, index) => {
+    if (isNaN(e.target.value)) return false;
+    setPin([
+      ...pin.map((data, indx) => (indx === index ? e.target.value : data)),
+    ]);
+    if (e.target.value && e.target.nextSibling) {
+      e.target.nextSibling.focus();
+    }
+  };
+  const handleOnKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !pin[index]) {
+      if (e.target.previousSibling) {
+        e.target.previousSibling.focus();
+      }
+      setPin([
+        ...pin.map((data, indx) => (indx === index - 1 ? "" : data)),
+      ]);
+    }
   };
   const handleLogin =(e)=>{
     e.preventDefault()
@@ -14,7 +34,8 @@ const Login = () => {
     const form = e.target
     const email = form.email.value
     //const phoneNumber = form.phoneNumber.value
-    const password = form.password.value
+    const newPin =pin.join("")
+    const password = newPin
     const userDetails={
         email,
         //phoneNumber,
@@ -62,17 +83,27 @@ const Login = () => {
                   }
                 </p>
               </label>
-            <div className="form-control">
               <label className="label">
-                <span className="label-text">Password</span>
-              </label>
-              <input
-                type="password"
-                name="password"
-                placeholder="password"
-                className="input input-bordered"
-                required
-              />
+              <span className="label-text">Password</span>
+            </label>
+            <div className="grid gap-2 grid-cols-5">
+              {pin.map((data, i) => {
+                return (
+                  
+                    <input
+                      key={i}
+                      type="password"
+                      name="password"
+                      value={data}
+                      maxLength={1}
+                      onChange={(e) => handleOnChange(e, i)}
+                      onKeyDown={(e) => handleOnKeyDown(e, i)}
+                      className="input w-14 input-bordered"
+                      required
+                    />
+              
+                );
+              })}
             </div>
             <div className="form-control mt-6">
               <button className="btn bg-primary text-white">Login</button>
