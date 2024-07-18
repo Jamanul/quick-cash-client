@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../AuthProvider/AuthProvider';
 
 const Navbar = () => {
+  const userFromLS= localStorage.getItem('user')
+  const userLS = (JSON.parse(userFromLS))
+  const {user,setUser}=useContext(AuthContext)
+  console.log(userLS?.email)
+  const handleLogout =()=>{
+    localStorage.removeItem("user")
+    setUser(null)
+  }
+  useEffect(()=>{
     
+  },[user])
     return (
         <div className="navbar bg-primary rounded-2xl">
         <div className="navbar-start">
@@ -27,7 +38,7 @@ const Navbar = () => {
          
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl text-white">Quick Cash</a>
+          <Link to={'/'} className="btn btn-ghost text-xl text-white">Quick Cash</Link>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
@@ -35,7 +46,9 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <Link to={'/login'} className="btn bg-secondary font-semibold text-primary">Login</Link>
+         {
+          userLS || user ? <button onClick={handleLogout} className="btn bg-secondary font-semibold text-primary">Log out</button> : <Link to={'/login'} className="btn bg-secondary font-semibold text-primary">Login</Link>
+         }
         </div>
       </div>
     );

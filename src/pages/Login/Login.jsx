@@ -5,7 +5,7 @@ import { AuthContext } from "../../AuthProvider/AuthProvider";
 const Login = () => {
     const [pin, setPin] = useState(new Array(5).fill(""));
   const [isNumber, setIsNumber] = useState(false);
-  const {handleLoginUser}=useContext(AuthContext)
+  const {handleLoginUser,handleLoginUserByNumber}=useContext(AuthContext)
   const handleIsNumber = () => {
     setIsNumber(!isNumber);
   };
@@ -36,13 +36,28 @@ const Login = () => {
     //const phoneNumber = form.phoneNumber.value
     const newPin =pin.join("")
     const password = newPin
+   { 
     const userDetails={
         email,
-        //phoneNumber,
         password
     }
-    console.log(password)
-    handleLoginUser(userDetails)
+
+    handleLoginUser(userDetails)}
+  }
+  const handleLoginByNumber =(e)=>{
+    e.preventDefault()
+    const form = e.target
+    //const email = form.email.value
+    const phoneNumber = form.phoneNumber.value
+    const newPin =pin.join("")
+    const password = newPin
+   { 
+    const userDetails={
+        password,
+        phoneNumber
+    }
+
+    handleLoginUserByNumber(userDetails)}
   }
   return (
     <div className="hero min-h-screen">
@@ -56,7 +71,7 @@ const Login = () => {
         </div>
         <div className="md:w-1/2 border border-primary rounded-2xl">
           <h1 className="text-4xl font-bold pt-4">Login now!</h1>
-          <form onSubmit={handleLogin} className="card-body">
+          <form onSubmit={isNumber ? handleLoginByNumber : handleLogin} className="card-body">
             {
                 isNumber ? <div className="form-control">
                 <label className="label">
